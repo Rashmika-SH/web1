@@ -344,7 +344,8 @@ const flowerEmojis = ['🌸', '🌺', '🌼', '🌻', '🌷', '🏵️', '💐',
 let lastFlowerTime = 0;
 const flowerDelay = 100; // Milliseconds between flowers
 
-document.addEventListener('mousemove', (e) => {
+// Function to create flower
+function createFlower(x, y) {
     const currentTime = Date.now();
     
     // Throttle flower creation
@@ -359,9 +360,9 @@ document.addEventListener('mousemove', (e) => {
     flower.className = 'falling-flower';
     flower.textContent = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
     
-    // Position at cursor
-    flower.style.left = e.pageX + 'px';
-    flower.style.top = e.pageY + 'px';
+    // Position at cursor/touch point
+    flower.style.left = x + 'px';
+    flower.style.top = y + 'px';
     
     // Random horizontal drift
     const drift = (Math.random() - 0.5) * 100;
@@ -381,6 +382,39 @@ document.addEventListener('mousemove', (e) => {
     setTimeout(() => {
         flower.remove();
     }, duration * 1000);
+}
+
+// Desktop: Mouse move
+document.addEventListener('mousemove', (e) => {
+    createFlower(e.pageX, e.pageY);
+});
+
+// Mobile: Touch move
+document.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        createFlower(touch.pageX, touch.pageY);
+    }
+});
+
+// Mobile: Scroll event (create flowers at random positions)
+let lastScrollTime = 0;
+const scrollFlowerDelay = 200;
+
+window.addEventListener('scroll', () => {
+    const currentTime = Date.now();
+    
+    if (currentTime - lastScrollTime < scrollFlowerDelay) {
+        return;
+    }
+    
+    lastScrollTime = currentTime;
+    
+    // Create flower at random position on screen
+    const x = Math.random() * window.innerWidth;
+    const y = window.scrollY + Math.random() * window.innerHeight;
+    
+    createFlower(x, y);
 });
 
 // Service card image modal
