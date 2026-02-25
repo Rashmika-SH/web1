@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmailJS Test</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+    <h1>EmailJS Test</h1>
+    <form id="testForm">
+        <input type="text" id="testName" placeholder="Your Name" required><br><br>
+        <input type="email" id="testEmail" placeholder="Your Email" required><br><br>
+        <textarea id="testMessage" placeholder="Your Message"></textarea><br><br>
+        <button type="submit">Test Send Email</button>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        // EmailJS Configuration
+        const EMAILJS_CONFIG = {
+            PUBLIC_KEY: '04cSKzx7hsjNE04dk',
+            SERVICE_ID: 'service_bgv8y4i',
+            TEMPLATE_ID: 'template_0r1byaa'
+        };
+
+        // Initialize EmailJS
+        emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+        console.log('EmailJS initialized');
+
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Sending...';
+            
+            const templateParams = {
+                name: document.getElementById('testName').value,
+                email: document.getElementById('testEmail').value,
+                message: document.getElementById('testMessage').value,
+                country: 'Test Country',
+                phone: 'Test Phone',
+                service: 'Test Service'
+            };
+            
+            console.log('Sending with params:', templateParams);
+            
+            emailjs.send(
+                EMAILJS_CONFIG.SERVICE_ID,
+                EMAILJS_CONFIG.TEMPLATE_ID,
+                templateParams
+            ).then(function(response) {
+                console.log('SUCCESS!', response);
+                resultDiv.innerHTML = '✅ Email sent successfully!';
+                resultDiv.style.color = 'green';
+            }).catch(function(error) {
+                console.log('FAILED...', error);
+                resultDiv.innerHTML = '❌ Failed to send email: ' + JSON.stringify(error);
+                resultDiv.style.color = 'red';
+            });
+        });
+    </script>
+</body>
+</html>

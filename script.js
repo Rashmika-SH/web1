@@ -339,6 +339,129 @@ window.addEventListener('scroll', () => {
 
 console.log('Astro Durga Prasad Website Loaded Successfully ✨');
 
+// EmailJS Configuration
+// Replace these with your actual EmailJS credentials
+const EMAILJS_CONFIG = {
+    PUBLIC_KEY: '04cSKzx7hsjNE04dk',        // Your public key
+    SERVICE_ID: 'service_bgv8y4i',          // Your service ID  
+    TEMPLATE_ID: 'template_0r1byaa'         // Your template ID
+};
+
+// Initialize EmailJS
+(function() {
+    console.log('Initializing EmailJS...');
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+        console.log('EmailJS initialized successfully with public key:', EMAILJS_CONFIG.PUBLIC_KEY);
+    } else {
+        console.error('EmailJS library not loaded!');
+    }
+})();
+
+// Form submission handling with EmailJS
+const consultationForm = document.getElementById('consultationForm');
+if (consultationForm) {
+    console.log('Consultation form found and event listener attached');
+    
+    consultationForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        console.log('Form submitted, starting EmailJS process...');
+        
+        const submitBtn = this.querySelector('.btn-submit');
+        const messageContainer = document.getElementById('form-message');
+        const originalText = submitBtn.textContent;
+        
+        // Show loading state
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        console.log('Button state changed to loading...');
+        
+        // Hide any previous messages
+        messageContainer.style.display = 'none';
+        messageContainer.className = 'form-message';
+        
+        // Prepare template parameters
+        const templateParams = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            country: document.getElementById('country').value,
+            phone: document.getElementById('phone').value,
+            service: document.getElementById('service').value,
+            message: document.getElementById('message').value || 'No additional message provided'
+        };
+        
+        console.log('Template parameters:', templateParams);
+        console.log('EmailJS Config:', EMAILJS_CONFIG);
+        
+        // Check if EmailJS is available
+        if (typeof emailjs === 'undefined') {
+            console.error('EmailJS is not loaded!');
+            alert('❌ Email service is not available. Please contact us directly at +1 (630) 666-9744');
+            
+            // Reset button
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            return;
+        }
+        
+        // Send email using EmailJS
+        emailjs.send(
+            EMAILJS_CONFIG.SERVICE_ID,
+            EMAILJS_CONFIG.TEMPLATE_ID,
+            templateParams
+        ).then(function(response) {
+            console.log('SUCCESS!', response.status, response.text);
+            
+            // Show success message
+            messageContainer.innerHTML = '✅ Thank you! Your consultation request has been sent successfully. We will contact you within 24 hours.';
+            messageContainer.className = 'form-message success';
+            messageContainer.style.display = 'block';
+            
+            // Show success alert
+            try {
+                showSuccessAlert();
+            } catch (alertError) {
+                console.log('Custom alert failed, using browser alert:', alertError);
+                alert('✅ Thank you! Your consultation request has been sent successfully. We will contact you within 24 hours.');
+            }
+            
+            // Reset form
+            consultationForm.reset();
+            
+            // Reset button
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            
+            // Scroll to message
+            messageContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+        }).catch(function(error) {
+            console.log('FAILED...', error);
+            
+            // Show error message
+            messageContainer.innerHTML = '❌ Sorry, there was an error sending your message. Please try again or contact us directly at +1 (630) 666-9744.';
+            messageContainer.className = 'form-message error';
+            messageContainer.style.display = 'block';
+            
+            // Also show browser alert for immediate feedback
+            alert('❌ There was an error sending your message. Please contact us directly at +1 (630) 666-9744 or try again.');
+            
+            // Reset button
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            
+            // Scroll to message
+            messageContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
+} else {
+    console.error('Consultation form not found!');
+}
+
 // Flower dropping animation on cursor movement
 const flowerEmojis = ['🌸', '🌺', '🌼', '🌻', '🌷', '🏵️', '💐', '🌹'];
 let lastFlowerTime = 0;
@@ -463,3 +586,120 @@ document.addEventListener('keydown', (e) => {
         closeModal();
     }
 });
+
+// Custom Success Alert Function
+function showSuccessAlert() {
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+    `;
+    
+    // Create alert box
+    const alertBox = document.createElement('div');
+    alertBox.style.cssText = `
+        background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #330000 100%);
+        border: 3px solid #ff8c00;
+        border-radius: 20px;
+        padding: 40px 30px;
+        text-align: center;
+        max-width: 450px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        animation: alertSlideIn 0.5s ease-out;
+        position: relative;
+    `;
+    
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes alertSlideIn {
+            0% {
+                transform: scale(0.7) translateY(-50px);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.9); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    alertBox.innerHTML = `
+        <div style="font-size: 4rem; margin-bottom: 20px; animation: bounce 2s infinite;">🙏</div>
+        <h2 style="color: #ff8c00; font-family: 'Cinzel', serif; font-size: 1.8rem; margin-bottom: 16px; text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);">
+            Thank You!
+        </h2>
+        <p style="color: #ffffff; font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px;">
+            Your consultation request has been sent successfully.
+        </p>
+        <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.95rem; margin-bottom: 25px;">
+            We will contact you within <strong style="color: #ff8c00;">24 hours</strong> via email or phone.
+        </p>
+        <div style="background: rgba(255, 140, 0, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 25px; border: 1px solid rgba(255, 140, 0, 0.3);">
+            <p style="color: #ff8c00; font-size: 0.9rem; margin: 0;">
+                📞 For urgent matters: <strong>+1 (630) 666-9744</strong>
+            </p>
+        </div>
+        <button onclick="closeSuccessAlert()" style="
+            background: linear-gradient(135deg, #dc143c 0%, #ff4500 50%, #ff8c00 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4);
+        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            Continue
+        </button>
+    `;
+    
+    overlay.appendChild(alertBox);
+    document.body.appendChild(overlay);
+    
+    // Store reference for closing
+    window.currentAlert = overlay;
+    
+    // Auto close after 10 seconds
+    setTimeout(() => {
+        if (window.currentAlert) {
+            closeSuccessAlert();
+        }
+    }, 10000);
+}
+
+// Function to close the alert
+function closeSuccessAlert() {
+    if (window.currentAlert) {
+        window.currentAlert.style.animation = 'fadeOut 0.3s ease-out';
+        setTimeout(() => {
+            if (window.currentAlert && window.currentAlert.parentNode) {
+                window.currentAlert.parentNode.removeChild(window.currentAlert);
+            }
+            window.currentAlert = null;
+        }, 300);
+    }
+}

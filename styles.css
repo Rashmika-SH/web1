@@ -93,11 +93,12 @@ h1, h2, h3, h4 {
     z-index: 1000;
     padding: 20px 0;
     transition: var(--transition);
-    background: transparent;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
 }
 
 .navbar.scrolled {
-    background: rgba(15, 23, 42, 0.95);
+    background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
     box-shadow: var(--shadow-md);
     padding: 12px 0;
@@ -274,7 +275,7 @@ h1, h2, h3, h4 {
 }
 
 .nav-link {
-    color: #000;
+    color: var(--white);
     text-decoration: none;
     font-weight: 500;
     transition: var(--transition);
@@ -325,7 +326,7 @@ h1, h2, h3, h4 {
 .hamburger span {
     width: 28px;
     height: 3px;
-    background: #000;
+    background: var(--white);
     border-radius: 2px;
     transition: var(--transition);
 }
@@ -1859,6 +1860,38 @@ h1, h2, h3, h4 {
     color: var(--accent-gold);
 }
 
+/* Floating Call Button */
+.call-float {
+    position: fixed;
+    bottom: 110px;
+    right: 30px;
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #dc143c 0%, #ff4500 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(220, 20, 60, 0.4);
+    z-index: 999;
+    transition: var(--transition);
+    animation: callPulse 2s infinite;
+}
+
+.call-float:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 32px rgba(220, 20, 60, 0.6);
+}
+
+@keyframes callPulse {
+    0%, 100% {
+        box-shadow: 0 8px 24px rgba(220, 20, 60, 0.4);
+    }
+    50% {
+        box-shadow: 0 8px 32px rgba(220, 20, 60, 0.7);
+    }
+}
+
 /* Floating WhatsApp Button */
 .whatsapp-float {
     position: fixed;
@@ -1948,15 +1981,37 @@ h1, h2, h3, h4 {
         left: -100%;
         width: 100%;
         height: calc(100vh - 80px);
-        background: var(--bg-dark);
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
         flex-direction: column;
         padding: 40px 20px;
         transition: var(--transition);
         gap: 24px;
+        border-top: 2px solid var(--accent-gold);
     }
 
     .nav-menu.active {
         left: 0;
+    }
+
+    .nav-menu .nav-link {
+        color: var(--white);
+        font-size: 1.125rem;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+    }
+
+    .nav-menu .nav-link:last-child {
+        border-bottom: none;
+    }
+
+    .nav-menu .btn-nav {
+        background: var(--gradient-gold);
+        color: var(--primary-color);
+        padding: 16px 32px;
+        border-radius: 12px;
+        text-align: center;
+        margin-top: 20px;
     }
 
     .hero {
@@ -2069,6 +2124,18 @@ h1, h2, h3, h4 {
 
     .whatsapp-float {
         bottom: 90px;
+    }
+    
+    .call-float {
+        bottom: 160px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+    }
+    
+    .call-float svg {
+        width: 28px;
+        height: 28px;
     }
 }
 
@@ -2269,6 +2336,32 @@ h1, h2, h3, h4 {
     margin-top: 16px;
     text-align: center;
     font-weight: 600;
+}
+
+/* Form Message */
+.form-message {
+    margin-top: 20px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: none;
+}
+
+.form-message.success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border: 2px solid #10b981;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.form-message.error {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #991b1b;
+    border: 2px solid #ef4444;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
 /* Falling Flowers Animation */
