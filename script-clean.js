@@ -262,3 +262,48 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+// Stats Counter Animation
+function animateCounter(element) {
+    const target = parseInt(element.getAttribute('data-target'));
+    const suffix = element.getAttribute('data-suffix') || '';
+    const duration = 2000; // 2 seconds
+    const increment = target / (duration / 16); // 60fps
+    let current = 0;
+    
+    const updateCounter = () => {
+        current += increment;
+        if (current < target) {
+            element.textContent = Math.floor(current).toLocaleString() + suffix;
+            requestAnimationFrame(updateCounter);
+        } else {
+            element.textContent = target.toLocaleString() + suffix;
+        }
+    };
+    
+    updateCounter();
+}
+
+// Intersection Observer for Stats Animation
+const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const statNumbers = entry.target.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                if (stat.textContent === '0') {
+                    animateCounter(stat);
+                }
+            });
+            statsObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.5 });
+
+// Observe stats section
+document.addEventListener('DOMContentLoaded', function() {
+    const statsGrid = document.querySelector('.stats-grid');
+    if (statsGrid) {
+        statsObserver.observe(statsGrid);
+    }
+});
