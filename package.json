@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Astrologer Sada Shiva - Vedic Astrology Website",
   "scripts": {
-    "start": "npx serve -s . -l $PORT -n"
+    "start": "node server.js"
   },
   "dependencies": {
-    "serve": "^14.2.0"
+    "express": "^4.18.2"
   }
 }
