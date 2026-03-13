@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Astrologer Sada Shiva - Vedic Astrology Website",
   "scripts": {
-    "start": "npx serve . -l $PORT --no-clipboard"
+    "start": "npx serve -s . -l $PORT -n"
   },
   "dependencies": {
     "serve": "^14.2.0"
